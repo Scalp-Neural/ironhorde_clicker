@@ -1,0 +1,164 @@
+/* Определим корневые переменные для удобной смены палитры */
+:root {
+  --color-bg: #1e2328;          /* Тёмный фон */
+  --color-panel: #2a3036;       /* Цвет панелей */
+  --color-accent: #ff4d00;      /* Ярко-оранжевый акцент */
+  --color-accent-alt: #69c2c0;  /* Бирюзовый/стальной акцент */
+  --color-text: #ffffff;        /* Основной цвет текста */
+  --color-subtext: #dcdcdc;     /* Второстепенный текст */
+}
+
+/* Сброс отступов и базовые настройки */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Базовые стили для body */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Шапка */
+header {
+  padding: 20px;
+  background-color: var(--color-panel);
+  border-bottom: 2px solid var(--color-accent);
+}
+header h1 {
+  margin-bottom: 10px;
+  color: var(--color-accent);
+  font-size: 2rem;
+}
+.subtitle {
+  color: var(--color-subtext);
+}
+
+/* Основная часть */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Игровое поле */
+#gameContainer {
+  position: relative;
+  width: 600px;
+  height: 300px;
+  /* Фон игрового окна */
+  /* Рекомендуемый размер фонового изображения: 600×300 пикселей */
+  background: var(--color-panel) url('images/game_bg.png') no-repeat center center;
+  background-size: cover;
+  border: 2px solid var(--color-accent-alt);
+  overflow: hidden;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+#ship {
+  position: absolute;
+  right: 20px;
+  top: 140px;
+  width: 150px;  /* Можно отрегулировать в зависимости от вашего изображения */
+}
+
+/* Панель управления */
+#controlPanel {
+  margin-bottom: 20px;
+}
+#controlPanel button {
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  border: none;
+  border-radius: 4px;
+  margin: 0 5px;
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+#controlPanel button:hover {
+  background-color: #e54700;
+}
+
+/* Статистика */
+.stats {
+  margin-bottom: 20px;
+}
+.stats p {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+
+/* Секция улучшений */
+#upgradeSection {
+  width: 600px;
+  background: var(--color-panel);
+  border: 2px solid var(--color-accent-alt);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: left;
+}
+#upgradeSection h2 {
+  margin-bottom: 10px;
+  color: var(--color-accent);
+}
+.upgrade-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2f353b;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+}
+.upgrade-item span {
+  margin-right: 10px;
+}
+.upgrade-item button {
+  background-color: var(--color-accent-alt);
+  color: var(--color-text);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.upgrade-item button:hover {
+  opacity: 0.8;
+}
+
+/* Снаряд */
+.projectile {
+  position: absolute;
+  width: 40px;   /* Рекомендуемый размер: 40×40 пикселей */
+  height: 40px;
+  /* Вместо однотонного фона задаём изображение снаряда */
+  background: none;
+  background-image: url('images/projectile.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  left: 0;
+  top: 140px;
+  animation: fly 700ms linear forwards;
+  animation-fill-mode: forwards;
+}
+
+/* Ключевые кадры анимации снаряда */
+@keyframes fly {
+  from { left: 0; top: 140px; }
+  to { left: 450px; top: 175px; }
+}
+.explosion {
+  pointer-events: none;
+  /* Дополнительные стили, если нужны */
+}
+
