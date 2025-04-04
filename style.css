@@ -161,4 +161,56 @@ main {
   pointer-events: none;
   /* Дополнительные стили, если нужны */
 }
+/* Для экранов меньше 700px (типичные мобильные устройства и маленькие окна) */
+@media (max-width: 700px) {
+
+  #gameContainer {
+    width: 100%;
+    height: auto;
+    padding-bottom: 50%; /* сохраняем пропорции для контейнера */
+    background-size: contain;
+  }
+
+  #ship {
+    width: 30%; /* корабль пропорционально контейнеру */
+    top: 40%;
+    right: 10px;
+  }
+
+  #upgradeSection, .stats, #controlPanel {
+    width: 95%;
+  }
+
+  #controlPanel button {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  .upgrade-item {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .upgrade-item span {
+    margin: 5px 0;
+  }
+
+  .upgrade-item button {
+    width: 100%;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .stats p {
+    font-size: 0.9rem;
+  }
+
+}
 
