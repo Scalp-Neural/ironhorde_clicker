@@ -90,7 +90,8 @@ function saveGame() {
   const gameData = {
     rust: rust,
     ships: ships,
-    upgrades: upgrades
+    upgrades: upgrades,
+    lastSaveTime: Date.now()  // сохраняем время сохранения
   };
   localStorage.setItem(`ironHordeSave_${userId}`, JSON.stringify(gameData));
 }
@@ -100,13 +101,33 @@ function loadGame() {
   const savedData = localStorage.getItem(`ironHordeSave_${userId}`);
   if (savedData) {
     const gameData = JSON.parse(savedData);
+
+    // Определяем время, прошедшее с последнего сохранения (в секундах)
+    const lastSaveTime = gameData.lastSaveTime;
+    const now = Date.now();
+    const offlineSeconds = Math.floor((now - lastSaveTime) / 1000);
+
+    // Загружаем базовые данные
     rust = gameData.rust;
     ships = gameData.ships;
     gameData.upgrades.forEach((savedUpgrade, index) => {
       upgrades[index].level = savedUpgrade.level;
     });
+
+    // Рассчитываем текущую скорость генерации ржавчины (учитываются апгрейды)
+    const totals = calculateTotals();
+    
+    // Вычисляем оффлайн-ржавчину: сколько ржавчины накопилось за время отсутствия
+    const offlineRust = offlineSeconds * totals.totalRustPerSecond;
+    rust += offlineRust; // прибавляем к текущей ржавчине
+
     updateDisplay();
     refreshUpgradeDisplay();
+
+    // Если игрок отсутствовал, уведомляем его о накопленной ржавчине
+    if (offlineSeconds > 0) {
+      alert(`Ты отсутствовал ${offlineSeconds} секунд и заработал ${Math.floor(offlineRust)} ржавчины оффлайн!`);
+    }
   }
 }
 
