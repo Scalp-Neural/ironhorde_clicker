@@ -9,6 +9,12 @@ let ships = 0;              // Количество кораблей Желез�
 // Флаг, чтобы финальное сообщение появилось один раз
 let endGameReached = false;
 
+let userId = 'anonymous'; // дефолтное значение
+
+if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
+    userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+}
+
 // Массив апгрейдов
 const upgrades = [
   {
@@ -78,6 +84,30 @@ function generateBonusCode(length = 8) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return code;
+}
+// Сохранение игры с учетом ID пользователя
+function saveGame() {
+  const gameData = {
+    rust: rust,
+    ships: ships,
+    upgrades: upgrades
+  };
+  localStorage.setItem(`ironHordeSave_${userId}`, JSON.stringify(gameData));
+}
+
+// Загрузка игры с учетом ID пользователя
+function loadGame() {
+  const savedData = localStorage.getItem(`ironHordeSave_${userId}`);
+  if (savedData) {
+    const gameData = JSON.parse(savedData);
+    rust = gameData.rust;
+    ships = gameData.ships;
+    gameData.upgrades.forEach((savedUpgrade, index) => {
+      upgrades[index].level = savedUpgrade.level;
+    });
+    updateDisplay();
+    refreshUpgradeDisplay();
+  }
 }
 
 // Подсчёт общей ржавчины за клик и в секунду
@@ -254,6 +284,11 @@ function initUpgrades() {
     upgradeList.appendChild(upgradeDiv);
   });
 }
+// Загружаем прогресс при старте
+loadGame();
+
+// Автоматическое сохранение каждые 15-30 секунд
+setInterval(saveGame, 15000);
 
 /************************************************************************
  * СТАРТ ИГРЫ
