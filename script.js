@@ -102,78 +102,70 @@ function updateDisplay() {
   rustPerSecondDisplay.textContent = totals.totalRustPerSecond.toFixed(1);
 }
 
+// Запуск снарядов
 function fireProjectiles() {
   const totals = calculateTotals();
-  const projectileCount = 1 + ships;
-
-  // получаем высоту и ширину контейнера игры
-  const containerHeight = gameContainer.clientHeight;
-  const containerWidth = gameContainer.clientWidth;
-
-  // получаем текущие координаты корабля относительно контейнера
-  const shipElem = document.getElementById('ship');
-  const shipRect = shipElem.getBoundingClientRect();
-  const containerRect = gameContainer.getBoundingClientRect();
-  const targetX = shipRect.left - containerRect.left;
-  const targetY = shipRect.top + shipRect.height / 2 - containerRect.top;
+  const projectileCount = 1 + ships; // количество снарядов = 1 + число кораблей
 
   for (let i = 0; i < projectileCount; i++) {
     const projectile = document.createElement("div");
     projectile.classList.add("projectile");
+    // Смещение по вертикали для каждого снаряда
+    projectile.style.top = (220 + i * 5) + "px"; // подбирайте значение под свою композицию
 
-    // стартовая позиция снарядов пропорционально высоте контейнера
-    projectile.style.top = (containerHeight * 0.7 + i * 5) + "px";
-    projectile.style.left = "0px";
+    gameContainer.appendChild(projectile);
 
-    // вычисляем траекторию полёта до корабля
-    const endX = targetX;
-    const endY = targetY;
+    projectile.addEventListener("animationend", () => {
+      // Получаем реальные координаты снаряда
+      const projectileRect = projectile.getBoundingClientRect();
+      const containerRect = gameContainer.getBoundingClientRect();
 
-    // динамическая анимация через JS вместо CSS (для адаптивности)
-    projectile.animate([
-      { transform: `translate(0, 0)` },
-      { transform: `translate(${endX}px, ${endY - parseFloat(projectile.style.top)}px)` }
-    ], {
-      duration: 700,
-      easing: 'linear'
-    }).onfinish = () => {
-      // Добавляем взрыв
+      // Вычисляем позицию снаряда относительно контейнера
+      const finalLeft = projectileRect.left - containerRect.left;
+      const finalTop  = projectileRect.top  - containerRect.top;
+
+      // Создаем элемент для взрыва
       const explosion = document.createElement("div");
       explosion.classList.add("explosion");
       explosion.style.position = "absolute";
-      explosion.style.left = endX + "px";
-      explosion.style.top = endY - 15 + "px";
+      explosion.style.left = finalLeft + "px";
+      explosion.style.top  = (finalTop - 15) + "px";
+      
+      // Устанавливаем начальное изображение взрыва (80×80)
       explosion.style.width = "80px";
       explosion.style.height = "80px";
       explosion.style.backgroundImage = "url('images/explosion1.png')";
       explosion.style.backgroundSize = "cover";
       explosion.style.backgroundRepeat = "no-repeat";
 
+      // Добавляем взрыв в контейнер
       gameContainer.appendChild(explosion);
+      // Удаляем снаряд
       gameContainer.removeChild(projectile);
 
+      // Меняем изображение и размеры взрыва через 200 мс
       setTimeout(() => {
         explosion.style.width = "120px";
         explosion.style.height = "120px";
         explosion.style.backgroundImage = "url('images/explosion2.png')";
+        // Центрируем взрыв относительно первоначальной точки
         explosion.style.marginLeft = "-20px"; 
         explosion.style.marginTop  = "-20px";
       }, 200);
 
+      // Удаляем элемент взрыва через 300 мс
       setTimeout(() => {
         if (gameContainer.contains(explosion)) {
           gameContainer.removeChild(explosion);
         }
       }, 300);
 
+      // При попадании добавляем ржавчину
       rust += totals.totalRustPerClick;
       updateDisplay();
-    };
-
-    gameContainer.appendChild(projectile);
+    });
   }
 }
-
 
 
 // Проверка достижения цели
